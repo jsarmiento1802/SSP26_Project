@@ -1,0 +1,37 @@
+# Generated output files
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+comp5700-venv/
+
+# PyInstaller
+*.spec
+dist/
+build/
+
+# HuggingFace model cache
+.cache/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

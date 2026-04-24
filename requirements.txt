@@ -1,0 +1,24 @@
+# ── Core LLM stack ────────────────────────────────────────────────────────
+transformers==4.49.0
+torch==2.6.0
+accelerate==1.4.0
+datasets==3.3.2
+evaluate==0.4.3
+
+# ── PDF reading ────────────────────────────────────────────────────────────
+pymupdf==1.25.3          # import fitz
+
+# ── Data / serialisation ──────────────────────────────────────────────────
+pyyaml==6.0.2
+pandas==2.2.3
+
+# ── Static analysis tool (Task-3) ─────────────────────────────────────────
+# kubescape is a standalone binary; install via:
+#   curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash
+# No pip package is required.
+
+# ── Testing ────────────────────────────────────────────────────────────────
+pytest==8.3.5
+
+# ── Binary packaging (Task-4) ─────────────────────────────────────────────
+pyinstaller==6.12.0
