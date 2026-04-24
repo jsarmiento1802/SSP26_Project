@@ -61,12 +61,27 @@ pip install -r requirements.txt
 # 3 – set HuggingFace token (required for gated Gemma model)
 export HF_TOKEN=hf_your_token_here
 
-# 4 – run Task-1 on a pair of PDFs
-python main.py cis-r1.pdf cis-r2.pdf
+# 4 – run the pipeline on a pair of PDFs
+#    (also install kubescape for Task-3: https://github.com/kubescape/kubescape)
+./run.sh cis-r1.pdf cis-r2.pdf ./project-yamls        # Linux / macOS / Git Bash
+run.bat  cis-r1.pdf cis-r2.pdf project-yamls          # Windows cmd/PowerShell
+
+# Or invoke Python directly:
+python main.py cis-r1.pdf cis-r2.pdf --scan-target ./project-yamls
 
 # 5 – run all tests
-pytest task1/ -v
+pytest task1/ task2/ task3/ -v
 ```
+
+The third argument (Kubescape scan target) is optional. If omitted, Task-3
+writes `output/kubescape_controls.txt` but skips the CSV scan.
+
+### Outputs (written to `output/`)
+- `*-kdes-{zero_shot,few_shot,chain_of_thought}.yaml` – Task-1 KDE extractions
+- `llm_outputs.txt` – raw LLM input/output log
+- `name_differences.txt`, `requirement_differences.txt` – Task-2 diffs
+- `kubescape_controls.txt` – Task-3 control-ID mapping
+- `kubescape_results.csv` – Task-3 Kubescape scan results (if `--scan-target` given)
 
 ---
 

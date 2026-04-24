@@ -229,19 +229,37 @@ def run_kubescape(
 
         logger.info("Running: %s", " ".join(cmd))
         try:
-            subprocess.run(cmd, check=False, capture_output=True, text=True)
+            proc = subprocess.run(cmd, check=False, capture_output=True, text=True)
         except FileNotFoundError as exc:
             raise RuntimeError(
                 f"Kubescape executable '{kubescape_bin}' not found on PATH."
             ) from exc
 
-        if not out_json.exists():
-            raise RuntimeError("Kubescape did not produce the expected JSON output.")
+        def _diag() -> str:
+            return (
+                f"\n  exit code: {proc.returncode}"
+                f"\n  stdout (last 2000 chars): {(proc.stdout or '')[-2000:]}"
+                f"\n  stderr (last 2000 chars): {(proc.stderr or '')[-2000:]}"
+            )
+
+        # Some Kubescape versions write JSON to stdout instead of --output
+        json_text = ""
+        if out_json.exists():
+            json_text = out_json.read_text(encoding="utf-8").strip()
+        if not json_text and proc.stdout and proc.stdout.lstrip().startswith("{"):
+            json_text = proc.stdout
+
+        if not json_text:
+            raise RuntimeError(
+                "Kubescape did not produce JSON output." + _diag()
+            )
 
         try:
-            raw = json.loads(out_json.read_text(encoding="utf-8"))
+            raw = json.loads(json_text)
         except json.JSONDecodeError as exc:
-            raise RuntimeError(f"Cannot parse Kubescape JSON: {exc}") from exc
+            raise RuntimeError(
+                f"Cannot parse Kubescape JSON: {exc}" + _diag()
+            ) from exc
 
     return _kubescape_json_to_dataframe(raw)
 
